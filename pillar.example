@@ -4,6 +4,7 @@ sensu:
       name: deb http://repositories.sensuapp.org/apt sensu main
       key_url: http://repositories.sensuapp.org/apt/pubkey.gpg
   server:
+    embedded_ruby: true
     install_gems:
       - mail
       - timeout
@@ -14,7 +15,7 @@ sensu:
     nagios_plugins: true
     redact:
       - password
-    gem_proxy: http://192.168.1.1:3128/
+#    gem_proxy: http://192.168.1.1:3128/
   rabbitmq:
     host: 10.0.0.1
     user: sensu
@@ -46,24 +47,24 @@ sensu:
       pass: secret
       ssl: True
   # Configurable path support.
-  paths:
-    plugins: monitoring/checks
-    handlers: monitoring/handlers
+#  paths:
+#    plugins: monitoring/checks
+#    handlers: monitoring/handlers
   # Optional: Checks within Pillar
-  checks:
-    check_http:
-      handlers:
-        - pagerduty
-      command: "/etc/sensu/plugins/check-http.rb -h localhost -p 443 -s -e 30"
-      interval: 300
-      occurences: 2
-      subscribers:
-        - ssl_server
+#  checks:
+#    check_http:
+#      handlers:
+#        - pagerduty
+#      command: "/etc/sensu/plugins/check-http.rb -h localhost -p 443 -s -e 30"
+#      interval: 300
+#      occurences: 2
+#      subscribers:
+#        - ssl_server
   # Optional: Pillarized Handler files
-  handlers:
-    handlers:
-      pagerduty:
-        type: pipe
-        command: /etc/sensu/handlers/pagerduty.rb
-    pagerduty:
-      api_key: "encrypted or secure apikey"
+#  handlers:
+#    handlers:
+#      pagerduty:
+#        type: pipe
+#        command: /etc/sensu/handlers/pagerduty.rb
+#    pagerduty:
+#      api_key: "encrypted or secure apikey"

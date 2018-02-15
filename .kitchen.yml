@@ -9,7 +9,7 @@ provisioner:
   log_level: debug
   require_chef: false
   formula: sensu
-  init_environment: "sudo apt-get -y install git"
+  init_environment: "sudo apt-get -y install git || sudo yum -y install git iproute"
   dependencies:
   - name: rabbitmq
     repo: git
@@ -18,22 +18,23 @@ provisioner:
     repo: git
     source: https://github.com/saltstack-formulas/redis-formula.git
   pillars-from-files:
-    sensu.sls: pillar.example
+     # TODO implement dedicated pillar for tests
+    #sensu.sls: pillar.example
     rabbitmq.sls: rabbitmq.example
   pillars:
     top.sls:
       base:
         '*':
-        - sensu
+        #- sensu
         - rabbitmq
 
 platforms:
-#  - name: centos
-#    driver_config:
-#      run_command: /usr/lib/systemd/systemd
-  - name: ubuntu
-    driver_config:
-      run_command: /bin/systemd
+- name: centos
+  driver_config:
+    run_command: /usr/lib/systemd/systemd
+- name: ubuntu
+  driver_config:
+    run_command: /bin/systemd
 
 suites:
   - name: default
@@ -51,4 +52,4 @@ suites:
 verifier:
   name: shell
   remote_exec: false
-  command: .venv/bin/py.test -v  --connection=docker  --hosts=root@$KITCHEN_CONTAINER_ID --html=reports/$KITCHEN_INSTANCE.html --self-contained-html --junit-xml=reports/junit-$KITCHEN_INSTANCE.xml tests/integration/$KITCHEN_SUITE
+  command: .venv/bin/py.test -v --color=yes --connection=docker  --hosts=root@$KITCHEN_CONTAINER_ID --html=reports/$KITCHEN_INSTANCE.html --self-contained-html --junit-xml=reports/junit-$KITCHEN_INSTANCE.xml tests/integration/$KITCHEN_SUITE

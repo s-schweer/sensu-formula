@@ -41,3 +41,4 @@ Gemfile.lock
 .bundle
 vendor
 .idea
+reports
