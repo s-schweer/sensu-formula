@@ -1,0 +1,53 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+  privileged: true
+
+provisioner:
+  name: salt_solo
+  log_level: debug
+  require_chef: false
+  formula: foo
+  dependencies:
+  - name: rabbitmq
+    repo: git
+    source: https://github.com/saltstack-formulas/rabbitmq-formula.git
+  - name: redis
+    repo: git
+    source: https://github.com/saltstack-formulas/redis-formula.git
+  pillars-from-files:
+    sensu.sls: pillar.example
+    rabbitmq.sls: rabbitmq.example
+  pillars:
+    top.sls:
+      base:
+        '*':
+        - sensu
+        - rabbitmq
+
+platforms:
+#  - name: centos
+#    driver_config:
+#      run_command: /usr/lib/systemd/systemd
+  - name: ubuntu
+    driver_config:
+      run_command: /bin/systemd
+
+suites:
+  - name: default
+    provisioner:
+      state_top:
+        base:
+          '*':
+          - redis
+          - rabbitmq
+          - sensu.client
+          - sensu.server
+          - sensu.api
+
+
+verifier:
+  name: shell
+  remote_exec: false
+  command: .venv/bin/py.test -v  --connection=docker  --hosts=root@$KITCHEN_CONTAINER_ID --html=reports/$KITCHEN_INSTANCE.html --self-contained-html --junit-xml=reports/junit-$KITCHEN_INSTANCE.xml tests/integration/$KITCHEN_SUITE
