@@ -10,9 +10,7 @@ virtualenv:
 setup: bundle_install virtualenv
 
 tests:
-	. .venv/bin/activate
 	bundle exec kitchen test
-	deactivate
 
 
 	
