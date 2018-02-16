@@ -33,7 +33,7 @@ platforms:
     run_command: /usr/lib/systemd/systemd
     provision_command:
     - yum -y install git iproute
-- name: ubuntu-16.04
+- name: ubuntu
   driver_config:
     run_command: /lib/systemd/systemd
     provision_command:
